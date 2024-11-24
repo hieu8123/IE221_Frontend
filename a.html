@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enhanced Carousel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .carousel-item {
+        transition: transform 0.5s ease-in-out;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-100">
+    <!-- Carousel Container -->
+    <div class="relative max-w-4xl mx-auto mt-10">
+      <!-- Carousel Content -->
+      <div id="carousel" class="flex overflow-hidden relative">
+        <!-- Slide 1 -->
+        <div class="carousel-item flex-shrink-0 w-full">
+          <div class="p-6 bg-white rounded-lg shadow-lg">
+            <div class="flex justify-between items-center">
+              <img
+                src="https://via.placeholder.com/350"
+                alt="OPPO Find X8"
+                class="w-1/2 rounded-lg shadow-md"
+              />
+              <div class="ml-4">
+                <h2 class="text-2xl font-bold">OPPO Find X8</h2>
+                <p class="text-gray-600 mt-2">Giá chỉ: 22,990,000₫</p>
+                <ul class="text-sm mt-4 space-y-2">
+                  <li>✅ Sạc AirVOOC 50W</li>
+                  <li>✅ OPPO Care+ (24 tháng)</li>
+                  <li>✅ Trợ giá lên tới 4 triệu</li>
+                </ul>
+                <button
+                  class="mt-4 bg-red-500 text-white py-2 px-6 rounded-lg shadow-md"
+                >
+                  Đặt trước ngay
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 2 -->
+        <div class="carousel-item flex-shrink-0 w-full">
+          <div class="p-6 bg-white rounded-lg shadow-lg">
+            <div class="flex justify-between items-center">
+              <img
+                src="https://via.placeholder.com/350"
+                alt="iPhone 16 Series"
+                class="w-1/2 rounded-lg shadow-md"
+              />
+              <div class="ml-4">
+                <h2 class="text-2xl font-bold">iPhone 16 Series</h2>
+                <p class="text-gray-600 mt-2">Ưu đãi cực khủng!</p>
+                <button
+                  class="mt-4 bg-red-500 text-white py-2 px-6 rounded-lg shadow-md"
+                >
+                  Mua ngay
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Slide 3 -->
+        <div class="carousel-item flex-shrink-0 w-full">
+          <div class="p-6 bg-white rounded-lg shadow-lg">
+            <div class="flex justify-between items-center">
+              <img
+                src="https://via.placeholder.com/350"
+                alt="Galaxy S24 Ultra"
+                class="w-1/2 rounded-lg shadow-md"
+              />
+              <div class="ml-4">
+                <h2 class="text-2xl font-bold">Galaxy S24 Ultra</h2>
+                <p class="text-gray-600 mt-2">Giá tốt chốt ngay!</p>
+                <button
+                  class="mt-4 bg-red-500 text-white py-2 px-6 rounded-lg shadow-md"
+                >
+                  Mua ngay
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <button
+        id="prev"
+        class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-white text-gray-800 shadow-md rounded-full w-10 h-10 flex justify-center items-center"
+      >
+        &#8249;
+      </button>
+      <button
+        id="next"
+        class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-white text-gray-800 shadow-md rounded-full w-10 h-10 flex justify-center items-center"
+      >
+        &#8250;
+      </button>
+    </div>
+
+    <!-- Carousel Names Section -->
+    <div class="flex justify-center mt-4">
+      <div class="flex space-x-8">
+        <button
+          data-slide="0"
+          class="font-bold text-gray-600 hover:text-red-500"
+        >
+          OPPO FIND X8
+        </button>
+        <button
+          data-slide="1"
+          class="font-bold text-gray-600 hover:text-red-500"
+        >
+          IPHONE 16 SERIES
+        </button>
+        <button
+          data-slide="2"
+          class="font-bold text-gray-600 hover:text-red-500"
+        >
+          GALAXY S24 ULTRA
+        </button>
+      </div>
+    </div>
+
+    <!-- Script for Carousel -->
+    <script>
+      const carousel = document.getElementById("carousel");
+      const items = document.querySelectorAll(".carousel-item");
+      const buttons = document.querySelectorAll("[data-slide]");
+      let currentIndex = 0;
+
+      function showSlide(index) {
+        carousel.style.transform = `translateX(-${index * 100}%)`;
+        buttons.forEach((btn, i) => {
+          btn.classList.toggle("text-red-500", i === index);
+          btn.classList.toggle("text-gray-600", i !== index);
+        });
+      }
+
+      function nextSlide() {
+        currentIndex = (currentIndex + 1) % items.length;
+        showSlide(currentIndex);
+      }
+
+      function prevSlide() {
+        currentIndex = (currentIndex - 1 + items.length) % items.length;
+        showSlide(currentIndex);
+      }
+
+      document.getElementById("next").addEventListener("click", nextSlide);
+      document.getElementById("prev").addEventListener("click", prevSlide);
+
+      buttons.forEach((btn, i) => {
+        btn.addEventListener("click", () => {
+          currentIndex = i;
+          showSlide(currentIndex);
+        });
+      });
+
+      // Auto-slide every 5 seconds
+      setInterval(nextSlide, 5000);
+    </script>
+  </body>
+</html>
