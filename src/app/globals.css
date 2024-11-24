@@ -4,7 +4,7 @@
 
 /* React-toastify */
 @import "~react-toastify/dist/ReactToastify.min.css";
-
+@import "tippy.js/dist/tippy.css";
 :root {
   --background: #ffffff;
   --foreground: #171717;
