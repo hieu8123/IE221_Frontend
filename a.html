@@ -1,168 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Enhanced Carousel</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng của bạn</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-      .carousel-item {
-        transition: transform 0.5s ease-in-out;
-      }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
     </style>
-  </head>
-
-  <body class="bg-gray-100">
-    <!-- Carousel Container -->
-    <div class="relative max-w-4xl mx-auto mt-10">
-      <!-- Carousel Content -->
-      <div id="carousel" class="flex overflow-hidden relative">
-        <!-- Slide 1 -->
-        <div class="carousel-item flex-shrink-0 w-full">
-          <div class="p-6 bg-white rounded-lg shadow-lg">
-            <div class="flex justify-between items-center">
-              <img
-                src="https://via.placeholder.com/350"
-                alt="OPPO Find X8"
-                class="w-1/2 rounded-lg shadow-md"
-              />
-              <div class="ml-4">
-                <h2 class="text-2xl font-bold">OPPO Find X8</h2>
-                <p class="text-gray-600 mt-2">Giá chỉ: 22,990,000₫</p>
-                <ul class="text-sm mt-4 space-y-2">
-                  <li>✅ Sạc AirVOOC 50W</li>
-                  <li>✅ OPPO Care+ (24 tháng)</li>
-                  <li>✅ Trợ giá lên tới 4 triệu</li>
-                </ul>
-                <button
-                  class="mt-4 bg-red-500 text-white py-2 px-6 rounded-lg shadow-md"
-                >
-                  Đặt trước ngay
-                </button>
-              </div>
-            </div>
-          </div>
+</head>
+<body class="bg-gray-50 p-6">
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <!-- Tiêu đề -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-semibold">Giỏ hàng của bạn</h1>
+            <a href="#" class="text-blue-500 text-sm hover:underline">Clear Shopping Cart</a>
         </div>
-        <!-- Slide 2 -->
-        <div class="carousel-item flex-shrink-0 w-full">
-          <div class="p-6 bg-white rounded-lg shadow-lg">
-            <div class="flex justify-between items-center">
-              <img
-                src="https://via.placeholder.com/350"
-                alt="iPhone 16 Series"
-                class="w-1/2 rounded-lg shadow-md"
-              />
-              <div class="ml-4">
-                <h2 class="text-2xl font-bold">iPhone 16 Series</h2>
-                <p class="text-gray-600 mt-2">Ưu đãi cực khủng!</p>
-                <button
-                  class="mt-4 bg-red-500 text-white py-2 px-6 rounded-lg shadow-md"
-                >
-                  Mua ngay
-                </button>
-              </div>
-            </div>
-          </div>
+        
+        <!-- Bảng giỏ hàng -->
+        <table class="w-full border-collapse">
+            <thead>
+                <tr class="text-left bg-gray-100">
+                    <th class="p-4">Product</th>
+                    <th class="p-4">Price</th>
+                    <th class="p-4">Quantity</th>
+                    <th class="p-4">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Sản phẩm 1 -->
+                <tr class="border-b">
+                    <td class="p-4 flex items-center gap-4">
+                        <img src="https://source.unsplash.com/50x50/?vase" alt="Product 1" class="w-12 h-12 rounded-lg">
+                        <span>Lọ hoa kim loại thân đẹp hai màu</span>
+                    </td>
+                    <td class="p-4">2.210.000 ₫</td>
+                    <td class="p-4">
+                        <div class="flex items-center gap-2">
+                            <button class="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200">-</button>
+                            <span class="text-lg font-medium">2</span>
+                            <button class="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200">+</button>
+                        </div>
+                    </td>
+                    <td class="p-4">4.420.000 ₫</td>
+                </tr>
+                <!-- Sản phẩm 2 -->
+                <tr class="border-b">
+                    <td class="p-4 flex items-center gap-4">
+                        <img src="https://source.unsplash.com/50x50/?glass" alt="Product 2" class="w-12 h-12 rounded-lg">
+                        <span>Lọ thủy tinh xoắn màu trà</span>
+                    </td>
+                    <td class="p-4">876.000 ₫</td>
+                    <td class="p-4">
+                        <div class="flex items-center gap-2">
+                            <button class="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200">-</button>
+                            <span class="text-lg font-medium">1</span>
+                            <button class="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200">+</button>
+                        </div>
+                    </td>
+                    <td class="p-4">876.000 ₫</td>
+                </tr>
+                <!-- Sản phẩm 3 -->
+                <tr class="border-b">
+                    <td class="p-4 flex items-center gap-4">
+                        <img src="https://source.unsplash.com/50x50/?metal" alt="Product 3" class="w-12 h-12 rounded-lg">
+                        <span>Lọ hoa kim loại thân móp</span>
+                    </td>
+                    <td class="p-4">2.700.000 ₫</td>
+                    <td class="p-4">
+                        <div class="flex items-center gap-2">
+                            <button class="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200">-</button>
+                            <span class="text-lg font-medium">1</span>
+                            <button class="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200">+</button>
+                        </div>
+                    </td>
+                    <td class="p-4">2.700.000 ₫</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- Nhập mã giảm giá -->
+        <div class="mt-6 flex items-center gap-4">
+            <input type="text" placeholder="Enter coupon code" class="flex-grow p-2 border border-gray-300 rounded-md">
+            <button class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Apply</button>
         </div>
-        <!-- Slide 3 -->
-        <div class="carousel-item flex-shrink-0 w-full">
-          <div class="p-6 bg-white rounded-lg shadow-lg">
-            <div class="flex justify-between items-center">
-              <img
-                src="https://via.placeholder.com/350"
-                alt="Galaxy S24 Ultra"
-                class="w-1/2 rounded-lg shadow-md"
-              />
-              <div class="ml-4">
-                <h2 class="text-2xl font-bold">Galaxy S24 Ultra</h2>
-                <p class="text-gray-600 mt-2">Giá tốt chốt ngay!</p>
-                <button
-                  class="mt-4 bg-red-500 text-white py-2 px-6 rounded-lg shadow-md"
-                >
-                  Mua ngay
-                </button>
-              </div>
-            </div>
-          </div>
+        
+        <!-- Cập nhật giỏ hàng -->
+        <div class="mt-6 flex justify-end">
+            <button class="p-3 bg-green-500 text-white rounded-md hover:bg-green-600">Update Cart</button>
         </div>
-      </div>
-
-      <!-- Navigation Buttons -->
-      <button
-        id="prev"
-        class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-white text-gray-800 shadow-md rounded-full w-10 h-10 flex justify-center items-center"
-      >
-        &#8249;
-      </button>
-      <button
-        id="next"
-        class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-white text-gray-800 shadow-md rounded-full w-10 h-10 flex justify-center items-center"
-      >
-        &#8250;
-      </button>
     </div>
-
-    <!-- Carousel Names Section -->
-    <div class="flex justify-center mt-4">
-      <div class="flex space-x-8">
-        <button
-          data-slide="0"
-          class="font-bold text-gray-600 hover:text-red-500"
-        >
-          OPPO FIND X8
-        </button>
-        <button
-          data-slide="1"
-          class="font-bold text-gray-600 hover:text-red-500"
-        >
-          IPHONE 16 SERIES
-        </button>
-        <button
-          data-slide="2"
-          class="font-bold text-gray-600 hover:text-red-500"
-        >
-          GALAXY S24 ULTRA
-        </button>
-      </div>
-    </div>
-
-    <!-- Script for Carousel -->
-    <script>
-      const carousel = document.getElementById("carousel");
-      const items = document.querySelectorAll(".carousel-item");
-      const buttons = document.querySelectorAll("[data-slide]");
-      let currentIndex = 0;
-
-      function showSlide(index) {
-        carousel.style.transform = `translateX(-${index * 100}%)`;
-        buttons.forEach((btn, i) => {
-          btn.classList.toggle("text-red-500", i === index);
-          btn.classList.toggle("text-gray-600", i !== index);
-        });
-      }
-
-      function nextSlide() {
-        currentIndex = (currentIndex + 1) % items.length;
-        showSlide(currentIndex);
-      }
-
-      function prevSlide() {
-        currentIndex = (currentIndex - 1 + items.length) % items.length;
-        showSlide(currentIndex);
-      }
-
-      document.getElementById("next").addEventListener("click", nextSlide);
-      document.getElementById("prev").addEventListener("click", prevSlide);
-
-      buttons.forEach((btn, i) => {
-        btn.addEventListener("click", () => {
-          currentIndex = i;
-          showSlide(currentIndex);
-        });
-      });
-
-      // Auto-slide every 5 seconds
-      setInterval(nextSlide, 5000);
-    </script>
-  </body>
+</body>
 </html>

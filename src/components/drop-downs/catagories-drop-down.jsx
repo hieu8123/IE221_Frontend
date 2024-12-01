@@ -3,16 +3,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { IoIosMenu } from "react-icons/io";
 import { SERVER_URL } from "@/contains";
-import notify from "../Notifications";
+import notify from "../notifications";
 
 const CategoriesDropdown = () => {
   const [showCategoryMenu, setShowCategoryMenu] = useState(false);
-  const [categories, setCatagories] = useState([]);
+  const [categories, setCategories] = useState([]);
 
-  const categoryMenuRef = useRef(null); // Tạo ref cho menu Danh mục
-  const categoryButtonRef = useRef(null); // Tạo ref cho button Danh mục
+  const categoryMenuRef = useRef(null);
+  const categoryButtonRef = useRef(null);
 
-  // Hàm xử lý việc đóng dropdown khi người dùng click ra ngoài
+  // Xử lý sự kiện click ngoài menu
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -25,76 +25,77 @@ const CategoriesDropdown = () => {
       }
     };
 
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
+  // Fetch danh mục
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await fetch(`${SERVER_URL}/category`);
         const data = await res.json();
-        if (res && res.ok) {
-          setCatagories(data);
-          console.log(data);
-          return;
+        if (res.ok) {
+          setCategories(data);
+        } else {
+          notify("error", "Failed to fetch categories");
         }
       } catch (err) {
-        console.error(err);
         notify("error", err.message || "An error occurred during fetch");
       }
     };
     fetchCategories();
   }, []);
 
+  const toggleMenu = (e) => {
+    setShowCategoryMenu((prev) => !prev);
+  };
+
   return (
-    <>
-      <div
-        className="relative grow-0 flex justify-center"
+    <div className="relative w-[150px] flex justify-center">
+      {/* Nút mở menu */}
+      <button
+        onClick={toggleMenu}
+        className="text-primary px-4 py-2 rounded-lg flex items-center space-x-2"
         ref={categoryButtonRef}
       >
-        <button
-          onClick={() => setShowCategoryMenu(!showCategoryMenu)}
-          className=" text-primary px-4 py-2 rounded-lg flex items-center space-x-2"
-        >
-          <IoIosMenu />
-          <span>Danh mục</span>
-        </button>
+        <IoIosMenu />
+        <span>Danh mục</span>
+      </button>
 
-        {/* Dropdown Menu */}
-        <div
-          ref={categoryMenuRef}
-          className={`${
-            showCategoryMenu ? "block" : "hidden"
-          } absolute left-0 top-full bg-white text-black shadow-lg mt-1 w-64 z-50 rounded-lg overflow-hidden`}
-        >
-          <ul>
-            {categories.map((category, index) => (
-              <li
-                key={index}
-                className="flex items-center space-x-2 py-2 px-4 hover:bg-gray-100"
+      {/* Dropdown */}
+      <div
+        ref={categoryMenuRef}
+        className={`absolute left-1/2 transform -translate-x-1/2 top-full bg-white text-black shadow-lg mt-1 w-64 z-50 rounded-lg overflow-hidden ${
+          showCategoryMenu ? "block" : "hidden"
+        }`}
+      >
+        <ul>
+          {categories.map((category) => (
+            <li
+              key={category.id}
+              className="flex items-center space-x-2 py-2 px-4 hover:bg-gray-100"
+            >
+              <Image
+                src={category.image}
+                alt={category.name}
+                width={20}
+                height={20}
+                className="cursor-pointer"
+              />
+              <Link
+                href={`/products?category_id=${category.id}`}
+                className="text-sm w-full h-full"
               >
-                <Image
-                  src={category.image}
-                  alt={category.name}
-                  width={20}
-                  height={20}
-                  className="cursor-pointer"
-                />
-                <Link
-                  href={`/products?category=${categories.id}`}
-                  className="text-sm"
-                >
-                  {category.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+                {category.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
-    </>
+    </div>
   );
 };
 

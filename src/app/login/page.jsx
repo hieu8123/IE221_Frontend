@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
 import useAuth from "@hooks/use-auth";
-import { redirect } from "next/navigation";
 import SubmitButton from "@/components/buttons/submit-button";
-import { z } from "zod";
-import { useState } from "react";
-import notify from "@/components/Notifications";
+import { set, z } from "zod";
+import { useEffect, useState } from "react";
+import notify from "@/components/notifications";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 // Định nghĩa schema Zod để xác thực dữ liệu form
 const loginSchema = z.object({
@@ -18,15 +18,16 @@ const loginSchema = z.object({
 });
 
 export default function Login() {
-  const [error, setError] = useState(null);
+  const [errorValidate, setErrorValidate] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { login, checkIsLoggedIn } = useAuth();
+  const { login, error, user } = useAuth();
+  const router = useRouter();
 
   // Hàm xử lý submit form
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError(null);
+    setErrorValidate(null);
     setIsLoading(true);
 
     // Lấy dữ liệu từ form
@@ -43,14 +44,14 @@ export default function Login() {
         acc[error.path[0]] = error.message; // Gán lỗi vào theo tên trường
         return acc;
       }, {});
-      setError(errors);
+      setErrorValidate(errors);
       setIsLoading(false);
       return;
     }
 
     // Nếu dữ liệu hợp lệ, thực hiện đăng nhập
-    const { user, error } = await login(email, password);
-    if (!user) {
+    await login(email, password);
+    if (error) {
       setIsLoading(false);
       notify("error", error);
       return;
@@ -58,16 +59,11 @@ export default function Login() {
 
     setIsLoading(false);
     notify("success", "Đăng nhập thành công");
-    redirect("/");
+    router.push("/"); // Chuyển hướng về trang chủ
   };
 
-  // Kiểm tra nếu người dùng đã đăng nhập
-  if (checkIsLoggedIn()) {
-    redirect("/");
-  }
-
   return (
-    <div className="flex min-h-[500px] items-center justify-center bg-gray-50">
+    <div className="flex min-h-[600px] items-center justify-center bg-gray-50">
       <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-xl">
         <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-200 bg-white px-4 py-6 pt-8 text-center sm:px-16">
           <h3 className="text-xl font-bold text-black">Đăng Nhập</h3>
@@ -90,8 +86,8 @@ export default function Login() {
               required
               className="mt-1 block w-full text-gray-700 appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
             />
-            {error?.email && (
-              <p className="text-red-500 text-xs">{error.email}</p>
+            {errorValidate?.email && (
+              <p className="text-red-500 text-xs">{errorValidate.email}</p>
             )}
           </div>
           <div className="relative">
@@ -116,8 +112,8 @@ export default function Login() {
             >
               {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
             </button>
-            {error?.password && (
-              <p className="text-red-500 text-xs">{error.password}</p>
+            {errorValidate?.password && (
+              <p className="text-red-500 text-xs">{errorValidate.password}</p>
             )}
           </div>
           <SubmitButton isLoading={isLoading}>Đăng nhập</SubmitButton>

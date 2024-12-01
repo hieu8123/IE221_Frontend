@@ -1,0 +1,10 @@
+.specification-container p:nth-child(even) {
+  background: #ebebec;
+}
+
+.specification-container p {
+  padding: 12px;
+  font-size: 15px;
+  margin-bottom: 0;
+  font-weight: 500;
+}

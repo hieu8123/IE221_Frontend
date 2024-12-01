@@ -4,28 +4,98 @@ import Link from "next/link";
 import SearchableDropdown from "@/components/drop-downs/search-drop-down";
 import Image from "next/image";
 import useAuth from "@/hooks/use-auth";
-import { IoIosMenu } from "react-icons/io";
-import "tippy.js/dist/tippy.css";
+import { CiUser } from "react-icons/ci";
 import CategoriesDropdown from "@/components/drop-downs/catagories-drop-down";
+import { IoIosCart } from "react-icons/io";
+import notify from "@/components/notifications";
+import { useDispatch, useSelector } from "react-redux";
+import { SERVER_URL } from "@/contains";
+import { useRouter } from "next/navigation";
+import { initializeCart } from "@/redux/cartSlice";
 
 export default function Header() {
-  const { checkIsLoggedIn, user, logout } = useAuth();
+  const { checkIsLoggedIn, user, logout, error, ensureTokenValidity } =
+    useAuth();
   const isLoggedIn = checkIsLoggedIn();
-  const [showCategoryMenu, setShowCategoryMenu] = useState(false);
-  const [categories, setCatagories] = useState([]);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef(null);
+  const userButtonRef = useRef(null);
+  const cartState = useSelector((state) => state.cart);
+  const router = useRouter();
+  const dispatch = useDispatch();
 
-  const categoryMenuRef = useRef(null); // Tạo ref cho menu Danh mục
-  const categoryButtonRef = useRef(null); // Tạo ref cho button Danh mục
-  // Hàm xử lý việc đóng dropdown khi người dùng click ra ngoài
+  useEffect(() => {
+    dispatch(initializeCart());
+  }, [dispatch]);
+
+  // Đồng bộ giỏ hàng với backend khi load trang
+  useEffect(() => {
+    const syncCart = async () => {
+      const productInCart =
+        cartState.cartItems.length > 0
+          ? cartState.cartItems.map((item) => ({
+              product_id: item.product.id,
+              quantity: item.quantity,
+            }))
+          : [];
+
+      try {
+        const response = await fetch(`${SERVER_URL}/cart/sync`, {
+          method: "POST", // Hoặc PUT tùy nhu cầu
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            product_in_cart: productInCart,
+          }),
+          credentials: "include", // Gửi kèm cookie
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to sync cart");
+        }
+      } catch (err) {
+        console.error("Error syncing cart:", err);
+      }
+    };
+
+    const handleBeforeUnload = (event) => {
+      // Cố gắng thực hiện sync trước khi unload, có thể delay
+      syncCart();
+
+      // Dừng hành động unload mặc định
+      event.preventDefault();
+      event.returnValue = ""; // Cần phải set giá trị này để tránh trình duyệt đóng ngay
+    };
+
+    // Thêm sự kiện trước khi unload trang
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [router.event, cartState.cartItems, cartState.cartItems.quantity]);
+
+  // kiểm tra trạng thái đăng nhập
+  useEffect(() => {
+    if (isLoggedIn) {
+      if (!ensureTokenValidity()) {
+        notify("warning", error);
+        logout();
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        categoryMenuRef.current &&
-        !categoryMenuRef.current.contains(event.target) &&
-        categoryButtonRef.current &&
-        !categoryButtonRef.current.contains(event.target)
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target) &&
+        userButtonRef.current &&
+        !userButtonRef.current.contains(event.target)
       ) {
-        setShowCategoryMenu(false);
+        setShowUserMenu(false);
       }
     };
 
@@ -39,7 +109,7 @@ export default function Header() {
     <header className="bg-blue-400 text-white shadow-md">
       <div className="container mx-auto px-4 flex items-center justify-between py-3">
         {/* Left: Logo and Danh mục */}
-        <div className="flex items-center space-x-4">
+        <div className="flex w-[100px] items-center space-x-4">
           {/* Logo */}
           <Link href="/">
             <Image
@@ -59,23 +129,19 @@ export default function Header() {
         <SearchableDropdown />
 
         {/* Right: Icons */}
-        <div className="flex items-center space-x-4 text-sm">
-          <a href="#" className="hidden sm:flex items-center space-x-1">
-            <span>📦</span>
-            <span>Tra cứu đơn hàng</span>
-          </a>
-          <a href="#" className="flex items-center space-x-1">
-            <span>🛒</span>
-            <span>Giỏ hàng</span>
-          </a>
-          <div className="relative group">
+        <div className="flex items-center justify-end space-x-10 text-sm">
+          <Link href="/cart" className="flex items-center space-x-1">
+            <IoIosCart className="scale-150" />
+            <span className="hidden md:block">Giỏ hàng</span>
+          </Link>
+          <div className="relative">
             {!isLoggedIn ? (
               <>
                 <Link
                   href="/login"
-                  className="bg-white text-black px-3 py-2 rounded-lg flex items-center"
+                  className="bg-white md:w-[150px] text-black px-3 py-2 rounded-lg flex items-center justify-center gap-4"
                 >
-                  <span>👤</span>
+                  <CiUser className="scale-150" />
                   <span className="hidden sm:inline">Đăng nhập</span>
                 </Link>
                 <div className="absolute hidden group-hover:block bg-white text-black text-sm p-4 shadow-lg rounded-md mt-2 right-0">
@@ -84,19 +150,30 @@ export default function Header() {
               </>
             ) : (
               <>
-                <button className="bg-white text-black px-3 py-2 rounded-lg flex items-center">
-                  <span>👤</span>
-                  <span className="hidden sm:inline">{user.name}</span>
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  ref={userButtonRef}
+                  className="bg-white md:w-[150px] text-black px-3 py-2 rounded-lg flex items-center"
+                >
+                  <CiUser className="scale-150 text-pink-500" />
+                  <span className="hidden sm:inline ml-2 text-pink-500">
+                    Chào, {user.name}
+                  </span>
                 </button>
-                <div className="absolute hidden group-hover:block bg-white text-black text-sm p-4 shadow-lg rounded-md mt-2 right-0">
-                  <ul>
-                    <li>
+                <div
+                  ref={userMenuRef}
+                  className={`absolute ${
+                    showUserMenu ? "block" : "hidden"
+                  } bg-white text-black text-sm p-4 shadow-lg rounded-md mt-2 right-0 z-20`}
+                >
+                  <ul className="flex flex-col justify-between gap-5">
+                    <li className="hover:scale-110 hover:text-blue-500">
                       <Link href="/profile">Hồ sơ cá nhân</Link>
                     </li>
-                    <li>
+                    <li className="hover:scale-110  hover:text-blue-500">
                       <Link href="/orders">Đơn hàng của tôi</Link>
                     </li>
-                    <li>
+                    <li className="hover:scale-110  hover:text-blue-500">
                       <button onClick={logout}>Đăng xuất</button>
                     </li>
                   </ul>

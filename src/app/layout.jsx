@@ -1,7 +1,9 @@
+"use client";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ToastContainer, toast } from "react-toastify";
-import LayoutWithRole from "@/layouts";
+import { Provider } from "react-redux";
+import store from "@/redux/store";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -14,20 +16,17 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-export const metadata = {
-  title: "Hieu store",
-  description: "Shop bán đồ công nghệ uy tín",
-};
-
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <LayoutWithRole>{children}</LayoutWithRole>
-        <ToastContainer />
-      </body>
-    </html>
+    <Provider store={store}>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          {children}
+          <ToastContainer />
+        </body>
+      </html>
+    </Provider>
   );
 }
