@@ -1,96 +1,96 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giỏ hàng của bạn</title>
+    <title>Checkout Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
 </head>
-<body class="bg-gray-50 p-6">
-    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
-        <!-- Tiêu đề -->
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-semibold">Giỏ hàng của bạn</h1>
-            <a href="#" class="text-blue-500 text-sm hover:underline">Clear Shopping Cart</a>
-        </div>
-        
-        <!-- Bảng giỏ hàng -->
-        <table class="w-full border-collapse">
-            <thead>
-                <tr class="text-left bg-gray-100">
-                    <th class="p-4">Product</th>
-                    <th class="p-4">Price</th>
-                    <th class="p-4">Quantity</th>
-                    <th class="p-4">Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Sản phẩm 1 -->
-                <tr class="border-b">
-                    <td class="p-4 flex items-center gap-4">
-                        <img src="https://source.unsplash.com/50x50/?vase" alt="Product 1" class="w-12 h-12 rounded-lg">
-                        <span>Lọ hoa kim loại thân đẹp hai màu</span>
-                    </td>
-                    <td class="p-4">2.210.000 ₫</td>
-                    <td class="p-4">
-                        <div class="flex items-center gap-2">
-                            <button class="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200">-</button>
-                            <span class="text-lg font-medium">2</span>
-                            <button class="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200">+</button>
+<body class="bg-gray-50 font-sans">
+    <div class="max-w-7xl mx-auto p-6 md:p-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Left Column: Checkout Details -->
+            <div>
+                <h1 class="text-2xl font-semibold mb-6">Chi tiết thanh toán</h1>
+                <form class="space-y-4">
+                    <!-- First Name and Last Name -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="first-name" class="block text-sm font-medium text-gray-700">First Name *</label>
+                            <input type="text" id="first-name" name="first-name" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                         </div>
-                    </td>
-                    <td class="p-4">4.420.000 ₫</td>
-                </tr>
-                <!-- Sản phẩm 2 -->
-                <tr class="border-b">
-                    <td class="p-4 flex items-center gap-4">
-                        <img src="https://source.unsplash.com/50x50/?glass" alt="Product 2" class="w-12 h-12 rounded-lg">
-                        <span>Lọ thủy tinh xoắn màu trà</span>
-                    </td>
-                    <td class="p-4">876.000 ₫</td>
-                    <td class="p-4">
-                        <div class="flex items-center gap-2">
-                            <button class="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200">-</button>
-                            <span class="text-lg font-medium">1</span>
-                            <button class="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200">+</button>
+                        <div>
+                            <label for="last-name" class="block text-sm font-medium text-gray-700">Last Name *</label>
+                            <input type="text" id="last-name" name="last-name" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                         </div>
-                    </td>
-                    <td class="p-4">876.000 ₫</td>
-                </tr>
-                <!-- Sản phẩm 3 -->
-                <tr class="border-b">
-                    <td class="p-4 flex items-center gap-4">
-                        <img src="https://source.unsplash.com/50x50/?metal" alt="Product 3" class="w-12 h-12 rounded-lg">
-                        <span>Lọ hoa kim loại thân móp</span>
-                    </td>
-                    <td class="p-4">2.700.000 ₫</td>
-                    <td class="p-4">
-                        <div class="flex items-center gap-2">
-                            <button class="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200">-</button>
-                            <span class="text-lg font-medium">1</span>
-                            <button class="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200">+</button>
+                    </div>
+
+                    <!-- Company Name -->
+                    <div>
+                        <label for="company-name" class="block text-sm font-medium text-gray-700">Company Name</label>
+                        <input type="text" id="company-name" name="company-name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+
+                    <!-- Country -->
+                    <div>
+                        <label for="country" class="block text-sm font-medium text-gray-700">Country *</label>
+                        <select id="country" name="country" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="">Chọn một quốc gia</option>
+                            <option value="vietnam">Vietnam</option>
+                            <option value="usa">USA</option>
+                            <option value="france">France</option>
+                        </select>
+                    </div>
+
+                    <!-- Street Address -->
+                    <div>
+                        <label for="street-address" class="block text-sm font-medium text-gray-700">Street Address *</label>
+                        <input type="text" id="street-address" name="street-address" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+
+                    <!-- Address Line 2 -->
+                    <div>
+                        <label for="address-line-2" class="block text-sm font-medium text-gray-700">Địa chỉ đường</label>
+                        <input type="text" id="address-line-2" name="address-line-2" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Apartment, suite, unit, etc. (optional)">
+                    </div>
+
+                    <!-- City -->
+                    <div>
+                        <label for="city" class="block text-sm font-medium text-gray-700">Tỉnh/Thành phố *</label>
+                        <input type="text" id="city" name="city" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+
+                    <!-- Phone and Email -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Số điện thoại *</label>
+                            <input type="text" id="phone" name="phone" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                         </div>
-                    </td>
-                    <td class="p-4">2.700.000 ₫</td>
-                </tr>
-            </tbody>
-        </table>
-        
-        <!-- Nhập mã giảm giá -->
-        <div class="mt-6 flex items-center gap-4">
-            <input type="text" placeholder="Enter coupon code" class="flex-grow p-2 border border-gray-300 rounded-md">
-            <button class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Apply</button>
-        </div>
-        
-        <!-- Cập nhật giỏ hàng -->
-        <div class="mt-6 flex justify-end">
-            <button class="p-3 bg-green-500 text-white rounded-md hover:bg-green-600">Update Cart</button>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Địa chỉ email *</label>
+                            <input type="email" id="email" name="email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                    </div>
+
+                    <!-- Other Address -->
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2">
+                            Tạo một tài khoản
+                        </label>
+                    </div>
+
+                    <!-- Order Notes -->
+                    <div>
+                        <label for="notes" class="block text-sm font-medium text-gray-700">Gửi đến một địa chỉ khác?</label>
+                        <textarea id="notes" name="notes" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Ghi chú về đơn đặt hàng của bạn..."></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Column: Order Summary -->
+            
         </div>
     </div>
 </body>

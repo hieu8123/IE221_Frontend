@@ -8,19 +8,26 @@ import {
   addToCart,
   removeFromCart,
   clearCart,
+  syncCartToBackend,
 } from "@/redux/cartSlice";
-import { SERVER_URL } from "@/contains";
 import { LayoutDefault } from "@/layouts";
 import useAuth from "@/hooks/use-auth";
+import LoadingSpinner from "@/components/loading";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const { cartItems = [] } = useSelector((state) => state.cart);
   const { checkIsLoggedIn } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Tải giỏ hàng từ backend khi load trang
   useEffect(() => {
-    dispatch(fetchCartFromBackend());
+    const loadCart = async () => {
+      setIsLoading(true);
+      await dispatch(fetchCartFromBackend());
+      setIsLoading(false);
+    };
+    loadCart();
   }, []);
 
   // Xử lý tăng số lượng sản phẩm
@@ -45,8 +52,8 @@ const Cart = () => {
   };
 
   // Xóa sản phẩm khỏi giỏ
-  const handleRemoveItem = (productId) => {
-    dispatch(removeFromCart(productId));
+  const handleRemoveItem = async (productId) => {
+    await dispatch(removeFromCart(productId));
   };
 
   // Xóa toàn bộ giỏ hàng
@@ -63,6 +70,18 @@ const Cart = () => {
     console.log(subtotal);
     return subtotal;
   };
+
+  if (isLoading) {
+    return (
+      <LayoutDefault>
+        <div className="flex items-center bg-gray-50 p-6 w-full lg:w-[80%] mx-auto h-[70vh]">
+          <div className=" mx-auto justify-center text-center bg-white p-6 rounded-lg shadow-md">
+            <LoadingSpinner />
+          </div>
+        </div>
+      </LayoutDefault>
+    );
+  }
 
   if (!checkIsLoggedIn()) {
     return (
@@ -169,7 +188,7 @@ const Cart = () => {
               Tổng cộng: {calculateTotal().toLocaleString()} ₫
             </h2>
             <Link
-              href="/checkout"
+              href="/check-out"
               className="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600"
             >
               Thanh toán

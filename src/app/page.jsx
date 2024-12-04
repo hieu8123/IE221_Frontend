@@ -5,10 +5,13 @@ import Card from "@/components/card/product-card";
 import { SERVER_URL } from "@/contains";
 import { useEffect, useState } from "react";
 import notify from "@/components/notifications";
+import { set } from "zod";
+import LoadingSpinner from "@/components/loading";
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchFeaturedProducts = async (
@@ -18,6 +21,7 @@ export default function Home() {
       sortOrder = "desc"
     ) => {
       try {
+        setIsLoading(true);
         // Xây dựng URL với tham số query string
         const url = new URL(`${SERVER_URL}/product/filter`); // Thay thế bằng URL thật của API
         const params = {
@@ -44,6 +48,7 @@ export default function Home() {
           console.error("Lỗi khi lấy dữ liệu:", data);
           notify("error", "Đã xảy ra lỗi khi lấy dữ liệu");
         }
+        setIsLoading(false);
       } catch (error) {
         console.log("Đã xảy ra lỗi:", error);
         notify("error", "Đã xảy ra lỗi:" + error);
@@ -57,6 +62,7 @@ export default function Home() {
       sortOrder = "desc"
     ) => {
       try {
+        setIsLoading(true);
         // Xây dựng URL với tham số query string
         const url = new URL(`${SERVER_URL}/product/filter`); // Thay thế bằng URL thật của API
         const params = {
@@ -83,6 +89,7 @@ export default function Home() {
           console.error("Lỗi khi lấy dữ liệu:", data);
           notify("error", "Đã xảy ra lỗi khi lấy dữ liệu");
         }
+        setIsLoading(false);
       } catch (error) {
         console.log("Đã xảy ra lỗi:", error);
         notify("error", "Đã xảy ra lỗi:" + error);
@@ -92,6 +99,16 @@ export default function Home() {
     fetchFeaturedProducts();
     fetchNewProducts();
   }, []);
+
+  if (isLoading) {
+    return (
+      <LayoutDefault>
+        <div className="relative h-[80vh]">
+          <LoadingSpinner />
+        </div>
+      </LayoutDefault>
+    );
+  }
 
   return (
     <LayoutDefault>

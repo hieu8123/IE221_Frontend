@@ -10,7 +10,7 @@ import { IoIosCart } from "react-icons/io";
 import notify from "@/components/notifications";
 import { useDispatch, useSelector } from "react-redux";
 import { SERVER_URL } from "@/contains";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { initializeCart } from "@/redux/cartSlice";
 
 export default function Header() {
@@ -23,12 +23,12 @@ export default function Header() {
   const cartState = useSelector((state) => state.cart);
   const router = useRouter();
   const dispatch = useDispatch();
+  const pathname = usePathname();
 
   useEffect(() => {
     dispatch(initializeCart());
   }, [dispatch]);
 
-  // Đồng bộ giỏ hàng với backend khi load trang
   useEffect(() => {
     const syncCart = async () => {
       const productInCart =
@@ -41,14 +41,14 @@ export default function Header() {
 
       try {
         const response = await fetch(`${SERVER_URL}/cart/sync`, {
-          method: "POST", // Hoặc PUT tùy nhu cầu
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             product_in_cart: productInCart,
           }),
-          credentials: "include", // Gửi kèm cookie
+          credentials: "include",
         });
 
         if (!response.ok) {
@@ -60,22 +60,9 @@ export default function Header() {
       }
     };
 
-    const handleBeforeUnload = (event) => {
-      // Cố gắng thực hiện sync trước khi unload, có thể delay
-      syncCart();
-
-      // Dừng hành động unload mặc định
-      event.preventDefault();
-      event.returnValue = ""; // Cần phải set giá trị này để tránh trình duyệt đóng ngay
-    };
-
-    // Thêm sự kiện trước khi unload trang
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [router.event, cartState.cartItems, cartState.cartItems.quantity]);
+    // Thực hiện sync khi pathname thay đổi hoặc component mount
+    syncCart();
+  }, [pathname, cartState.cartItems]);
 
   // kiểm tra trạng thái đăng nhập
   useEffect(() => {

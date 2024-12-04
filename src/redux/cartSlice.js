@@ -69,6 +69,8 @@ export const syncCartToBackend = createAsyncThunk(
         credentials: "include",
       });
 
+      console.log("sync is running");
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to sync cart");

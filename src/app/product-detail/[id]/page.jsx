@@ -11,6 +11,7 @@ import ProductCard from "@/components/card/product-card";
 import "./product-detail.css";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/redux/cartSlice";
+import { set } from "zod";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -20,6 +21,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [isExpanded, setIsExpanded] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
   const error = useSelector((state) => state.cart.error);
@@ -36,6 +38,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        setIsLoading(true);
         const response = await fetch(`${SERVER_URL}/product/${id}`);
         const data = await response.json();
         console.log("run");
@@ -45,6 +48,7 @@ const ProductDetail = () => {
           console.error(data);
           notify("error", data.message || "An error occurred during fetch");
         }
+        setIsLoading(false);
       } catch (err) {
         console.error(err);
         notify("error", err.message || "An error occurred during fetch");
@@ -73,6 +77,16 @@ const ProductDetail = () => {
       fetchRelatedProducts();
     }
   }, [id]);
+
+  if (isLoading) {
+    return (
+      <LayoutDefault>
+        <div className="relative h-[80vh]">
+          <LoadingSpinner />
+        </div>
+      </LayoutDefault>
+    );
+  }
 
   return (
     <LayoutDefault>

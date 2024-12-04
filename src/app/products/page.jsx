@@ -7,6 +7,8 @@ import notify from "@/components/notifications";
 import SelectDropdown from "@/components/drop-downs/select-drop-down";
 import MultiRangeSlider from "@/components/slider/multi-range-slider";
 import { useRouter, useSearchParams } from "next/navigation";
+import { set } from "zod";
+import LoadingSpinner from "@/components/loading";
 
 export default function ProductsPage() {
   const [filterdProducts, setFilterdProducts] = useState([]);
@@ -20,6 +22,7 @@ export default function ProductsPage() {
     min_price: 0,
     max_price: 100000000,
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedBrand, setSelectedBrand] = useState(null);
@@ -118,6 +121,7 @@ export default function ProductsPage() {
 
   const fetchFilteredProducts = async () => {
     try {
+      setIsLoading(true);
       const queryParams = new URLSearchParams(filter).toString();
       console.log("Query params:", queryParams);
       const response = await fetch(
@@ -127,15 +131,12 @@ export default function ProductsPage() {
       setFilterdProducts(data.products);
       setTotalPages(data.total_pages);
       setCurrentPage(data.page);
+      setIsLoading(false);
     } catch (error) {
       console.log("Lỗi khi lấy sản phẩm:", error);
       notify("error", "Đã xảy ra lỗi:" + error);
     }
   };
-
-  useEffect(() => {
-    console.log("Filter products:", filterdProducts);
-  }, [filterdProducts]);
 
   // Fetch dữ liệu brands và categories
   useEffect(() => {
@@ -237,15 +238,20 @@ export default function ProductsPage() {
         </button>
       </section>
 
-      <section className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 rounded shadow-md p-10 mx-auto mt-7 gap-10">
-        {filterdProducts && filterdProducts.length > 0 ? (
-          filterdProducts.map((product) => (
-            <Card key={product.id} product={product} />
-          ))
-        ) : (
-          <p>Không có sản phẩm nào</p>
-        )}
-      </section>
+      {/* Danh sách sản phẩm */}
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <section className="container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 rounded shadow-md p-10 mx-auto mt-7 gap-10">
+          {filterdProducts && filterdProducts.length > 0 ? (
+            filterdProducts.map((product) => (
+              <Card key={product.id} product={product} />
+            ))
+          ) : (
+            <p>Không có sản phẩm nào</p>
+          )}
+        </section>
+      )}
 
       {/* Pagination */}
       {totalPages > 1 && (
