@@ -60,8 +60,7 @@ export default function Header() {
       }
     };
 
-    // Thực hiện sync khi pathname thay đổi hoặc component mount
-    syncCart();
+    if (isLoggedIn) syncCart();
   }, [pathname, cartState.cartItems]);
 
   // kiểm tra trạng thái đăng nhập

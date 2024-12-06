@@ -92,8 +92,8 @@ const ProductDetail = () => {
     <LayoutDefault>
       {product ? (
         <main className="container mx-auto py-6 px-6">
-          <div className="flex flex-col md:flex-row">
-            <div className="md:w-1/2 space-y-4">
+          <div className="flex flex-col lg:flex-row">
+            <div className="lg:w-1/2 space-y-4">
               <div className="border border-gray-300 rounded flex justify-center items-center">
                 <Image
                   src={product.images[currentImage]}
@@ -131,7 +131,7 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            <div className="md:w-2/3 md:ml-8">
+            <div className="lg:w-2/3 lg:ml-8">
               <h1 className="text-2xl font-bold">{product.name}</h1>
               <div className="text-orange-500 text-3xl font-semibold mt-4">
                 {formatPrice(product.price)}
@@ -193,10 +193,11 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          <div className="mt-8 grid md:grid-cols-3 gap-6">
+          <div className="mt-8 grid lg:grid-cols-3 gap-6">
             {/* Description */}
-            <div className="relative bg-white md:col-span-2 shadow rounded-lg p-4">
-              <h2 className="text-xl font-semibold">Mô tả sản phẩm</h2>
+            <div className="relative bg-white lg:col-span-2 shadow rounded-lg p-4">
+              <h2 className="text-xl font-semibold mb-2">Mô tả sản phẩm</h2>
+              <div className="w-full h-[4px] mb-3 bg-orange-500"></div>
               <div className="relative flex justify-center items-center">
                 <div
                   dangerouslySetInnerHTML={{
@@ -204,7 +205,7 @@ const ProductDetail = () => {
                       ? product.description
                       : product.description.slice(0, 1000),
                   }}
-                  className="prose text-left w-full max-w-2xl"
+                  className="prose text-justify w-full max-w-2xl space-y-4"
                 />
                 {/* Overlay mờ dần từ trên xuống dưới khi thu gọn */}
                 {!isExpanded && (
@@ -226,7 +227,8 @@ const ProductDetail = () => {
 
             {/* Specifications */}
             <div className="bg-white shadow rounded-lg py-4 px-1">
-              <h2 className="text-xl font-semibold">Thông số kỹ thuật</h2>
+              <h2 className="text-xl font-semibold mb-2">Thông số kỹ thuật</h2>
+              <div className="w-full h-[4px] mb-3 bg-orange-500"></div>
               <div className="w-full overflow-x-auto">
                 <div
                   className="prose specification-container"

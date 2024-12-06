@@ -2,8 +2,8 @@
 import Link from "next/link";
 import useAuth from "@hooks/use-auth";
 import SubmitButton from "@/components/buttons/submit-button";
-import { set, z } from "zod";
-import { useEffect, useState } from "react";
+import { z } from "zod";
+import { useState } from "react";
 import notify from "@/components/notifications";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
 import { useRouter } from "next/navigation";

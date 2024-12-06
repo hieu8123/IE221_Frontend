@@ -1,97 +1,71 @@
-
 <!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout Form</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 font-sans">
-    <div class="max-w-7xl mx-auto p-6 md:p-12">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Left Column: Checkout Details -->
-            <div>
-                <h1 class="text-2xl font-semibold mb-6">Chi tiết thanh toán</h1>
-                <form class="space-y-4">
-                    <!-- First Name and Last Name -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="first-name" class="block text-sm font-medium text-gray-700">First Name *</label>
-                            <input type="text" id="first-name" name="first-name" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        </div>
-                        <div>
-                            <label for="last-name" class="block text-sm font-medium text-gray-700">Last Name *</label>
-                            <input type="text" id="last-name" name="last-name" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        </div>
-                    </div>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firebase Storage Test</title>
 
-                    <!-- Company Name -->
-                    <div>
-                        <label for="company-name" class="block text-sm font-medium text-gray-700">Company Name</label>
-                        <input type="text" id="company-name" name="company-name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                    </div>
+    <!-- Thêm Firebase SDKs dưới dạng module -->
+    <script type="module">
+      // Firebase config và Firebase SDK import
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+      import {
+        getStorage,
+        ref,
+        uploadBytes,
+        getDownloadURL,
+      } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js";
 
-                    <!-- Country -->
-                    <div>
-                        <label for="country" class="block text-sm font-medium text-gray-700">Country *</label>
-                        <select id="country" name="country" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                            <option value="">Chọn một quốc gia</option>
-                            <option value="vietnam">Vietnam</option>
-                            <option value="usa">USA</option>
-                            <option value="france">France</option>
-                        </select>
-                    </div>
+      // Firebase config
+      const firebaseConfig = {
+        apiKey: "AIzaSyCMZt7DtQI4DdSK3KsZ9M3ZlE1YOtUsXys",
+        authDomain: "webbanhang-25296.firebaseapp.com",
+        projectId: "webbanhang-25296",
+        storageBucket: "webbanhang-25296.appspot.com",
+        messagingSenderId: "232680871274",
+        appId: "1:232680871274:web:9d49808655082d67308113",
+        measurementId: "G-Y9RPEMW39E",
+      };
 
-                    <!-- Street Address -->
-                    <div>
-                        <label for="street-address" class="block text-sm font-medium text-gray-700">Street Address *</label>
-                        <input type="text" id="street-address" name="street-address" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                    </div>
+      // Khởi tạo Firebase
+      const app = initializeApp(firebaseConfig);
+      const storage = getStorage(app);
 
-                    <!-- Address Line 2 -->
-                    <div>
-                        <label for="address-line-2" class="block text-sm font-medium text-gray-700">Địa chỉ đường</label>
-                        <input type="text" id="address-line-2" name="address-line-2" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Apartment, suite, unit, etc. (optional)">
-                    </div>
+      // Hàm tải file lên Firebase Storage
+      window.uploadFile = function () {
+        const file = document.getElementById("file-upload").files[0];
+        if (file) {
+          const storageRef = ref(storage, "uploads/" + file.name);
 
-                    <!-- City -->
-                    <div>
-                        <label for="city" class="block text-sm font-medium text-gray-700">Tỉnh/Thành phố *</label>
-                        <input type="text" id="city" name="city" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                    </div>
+          // Upload file lên Firebase Storage
+          const uploadTask = uploadBytes(storageRef, file);
 
-                    <!-- Phone and Email -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-700">Số điện thoại *</label>
-                            <input type="text" id="phone" name="phone" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        </div>
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700">Địa chỉ email *</label>
-                            <input type="email" id="email" name="email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                        </div>
-                    </div>
+          // Theo dõi tiến trình tải lên
+          uploadTask
+            .then(function (snapshot) {
+              console.log("Upload successful!");
+              getDownloadURL(snapshot.ref).then(function (downloadURL) {
+                document.getElementById("download-url").textContent =
+                  downloadURL;
+              });
+            })
+            .catch(function (error) {
+              console.error("Error uploading file:", error);
+            });
+        } else {
+          alert("Please choose a file to upload.");
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <h1>Firebase Storage Test</h1>
 
-                    <!-- Other Address -->
-                    <div>
-                        <label class="flex items-center">
-                            <input type="checkbox" class="mr-2">
-                            Tạo một tài khoản
-                        </label>
-                    </div>
+    <!-- Chọn file để upload -->
+    <input type="file" id="file-upload" accept="image/*" />
+    <button onclick="uploadFile()">Upload File</button>
 
-                    <!-- Order Notes -->
-                    <div>
-                        <label for="notes" class="block text-sm font-medium text-gray-700">Gửi đến một địa chỉ khác?</label>
-                        <textarea id="notes" name="notes" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Ghi chú về đơn đặt hàng của bạn..."></textarea>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Right Column: Order Summary -->
-            
-        </div>
-    </div>
-</body>
+    <!-- Hiển thị URL tải xuống -->
+    <p>Download URL: <span id="download-url"></span></p>
+  </body>
 </html>

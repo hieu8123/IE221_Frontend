@@ -4,7 +4,11 @@
 
 /* React-toastify */
 @import "~react-toastify/dist/ReactToastify.min.css";
+/* React-loading-skeleton */
 @import "~react-loading-skeleton/dist/skeleton.css";
+/* CKEditor */
+@import "~ckeditor5/ckeditor5.css";
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
