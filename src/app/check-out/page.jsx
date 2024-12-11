@@ -78,7 +78,6 @@ export default function CheckoutPage() {
       const data = await response.json();
 
       notify("success", "Order created successfully");
-      díspatch(clearCart());
       redirect(`/check-out/success?order_id=${data.id}&status=SUCCESS`);
     } catch (error) {
       console.error("Failed to payment:", error);

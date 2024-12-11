@@ -21,6 +21,12 @@
   }
 } */
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light; /* Tắt chế độ dark mode */
+  }
+}
+
 body {
   color: var(--foreground);
   background: var(--background);

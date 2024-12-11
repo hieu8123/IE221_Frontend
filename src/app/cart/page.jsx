@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCartFromBackend,
-  addToCart,
+  updateCart,
   removeFromCart,
   clearCart,
   syncCartToBackend,
@@ -37,7 +37,7 @@ const Cart = () => {
     );
 
     if (existingItem?.quantity < product.quantity) {
-      dispatch(addToCart({ product, quantity: 1 }));
+      dispatch(updateCart({ product, quantity: 1 }));
     }
   };
 
@@ -47,7 +47,7 @@ const Cart = () => {
       (item) => item.product.id === product.id
     );
     if (existingItem?.quantity > 1) {
-      dispatch(addToCart({ product, quantity: -1 }));
+      dispatch(updateCart({ product, quantity: -1 }));
     }
   };
 

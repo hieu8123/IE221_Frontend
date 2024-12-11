@@ -1,7 +1,8 @@
+"use client";
 import { calculateDiscountPercentag, formatPrice } from "@/utils";
 import Image from "next/legacy/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { CiDeliveryTruck } from "react-icons/ci";
 import { IoCartOutline } from "react-icons/io5";
@@ -14,16 +15,9 @@ const ProductCard = ({ product }) => {
   const isLoading = Object.keys(product).length === 0; // Kiểm tra product có rỗng không
 
   const dispatch = useDispatch();
-  const error = useSelector((state) => state.cart.error);
 
-  const addToCartHandler = async () => {
-    try {
-      // Gọi action addToCart
-      await dispatch(addToCart({ product: product }));
-      notify("success", "Thêm vào giỏ hàng thành công");
-    } catch (error) {
-      notify("error", "Thêm vào giỏ hàng thất bại.");
-    }
+  const addToCartHandler = () => {
+    dispatch(addToCart({ product: product }));
   };
 
   if (isLoading) {

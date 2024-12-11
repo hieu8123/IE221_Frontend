@@ -47,6 +47,7 @@ export default function ProfilePage() {
         console.log("data", data);
         setProfile(data);
         setIsLoggedIn(true);
+        setIsLoading(false);
       }
       setIsLoading(false);
     };

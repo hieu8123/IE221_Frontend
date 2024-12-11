@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { SERVER_URL } from "@/contains";
+import notify from "@/components/notifications";
 
 // Helper: Lấy dữ liệu giỏ hàng từ localStorage chỉ trên client
 const getInitialCartState = () => {
@@ -18,6 +19,7 @@ const initialState = {
   cartItems: [], // Khởi tạo giỏ hàng rỗng
   addToCartStatus: null, // Trạng thái thêm sản phẩm vào giỏ
   isClient: false, // Đánh dấu nếu đang ở môi trường client
+  error: null, // Lỗi khi thêm sản phẩm vào giỏ
 };
 
 // Thunk: Tải giỏ hàng từ backend
@@ -105,16 +107,42 @@ const cartSlice = createSlice({
     addToCart: (state, action) => {
       const { product, quantity = 1 } = action.payload;
 
+      // Reset trạng thái trước khi thực hiện
+      state.addToCartStatus = "idle";
+      state.error = null;
+
+      // Kiểm tra số lượng sản phẩm
+      if (quantity > product.quantity) {
+        state.addToCartStatus = "failed";
+        state.error = `Số lượng sản phẩm "${product.name}" không đủ!`;
+        notify("error", state.error);
+        return;
+      }
+
+      // Cập nhật hoặc thêm sản phẩm mới vào giỏ
       const existingItem = state.cartItems.find(
         (item) => item.product.id === product.id
       );
 
       if (existingItem) {
+        if (existingItem.quantity + quantity > product.quantity) {
+          state.addToCartStatus = "failed";
+          state.error = `Số lượng sản phẩm "${product.name}" không đủ!`;
+          notify("error", state.error);
+          return;
+        }
+        // Nếu đủ, tăng số lượng sản phẩm
         existingItem.quantity += quantity;
       } else {
         state.cartItems.push({ product, quantity });
       }
 
+      // Đánh dấu thành công
+      state.addToCartStatus = "success";
+      state.error = null;
+      notify("success", "Đã thêm sản phẩm vào giỏ hàng");
+
+      // Cập nhật giỏ hàng trong localStorage nếu client
       if (state.isClient) {
         try {
           localStorage.setItem("cart", JSON.stringify(state.cartItems));
@@ -122,6 +150,48 @@ const cartSlice = createSlice({
           console.error("Failed to save cart to localStorage:", error);
         }
       }
+
+      return;
+    },
+    updateCart: (state, action) => {
+      const { product, quantity = 1 } = action.payload;
+
+      // Reset trạng thái trước khi thực hiện
+      state.addToCartStatus = "idle";
+      state.error = null;
+
+      // Kiểm tra số lượng sản phẩm
+      const existingItem = state.cartItems.find(
+        (item) => item.product.id === product.id
+      );
+
+      if (existingItem) {
+        if (existingItem.quantity + quantity > product.quantity) {
+          state.addToCartStatus = "failed";
+          state.error = `Số lượng sản phẩm "${product.name}" không đủ!`;
+          notify("error", state.error);
+          return;
+        }
+        // Nếu đủ, tăng số lượng sản phẩm
+        existingItem.quantity += quantity;
+      } else {
+        notify("error", "Sản phẩm không tồn tại trong giỏ hàng");
+      }
+
+      // Đánh dấu thành công
+      state.addToCartStatus = "success";
+      state.error = null;
+
+      // Cập nhật giỏ hàng trong localStorage nếu client
+      if (state.isClient) {
+        try {
+          localStorage.setItem("cart", JSON.stringify(state.cartItems));
+        } catch (error) {
+          console.error("Failed to save cart to localStorage:", error);
+        }
+      }
+
+      return;
     },
 
     removeFromCart: (state, action) => {
@@ -167,7 +237,12 @@ const cartSlice = createSlice({
   },
 });
 
-export const { initializeCart, addToCart, removeFromCart, clearCart } =
-  cartSlice.actions;
+export const {
+  initializeCart,
+  addToCart,
+  updateCart,
+  removeFromCart,
+  clearCart,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;
