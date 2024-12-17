@@ -50,8 +50,8 @@ export default function Login() {
     }
 
     // Nếu dữ liệu hợp lệ, thực hiện đăng nhập
-    await login(email, password);
-    if (error) {
+    const err = await login(email, password);
+    if (err) {
       setIsLoading(false);
       notify("error", error);
       return;

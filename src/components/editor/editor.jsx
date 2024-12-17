@@ -93,7 +93,7 @@ const Editor = forwardRef(
         ref.current.root.innerHTML = defaultValue; // Cập nhật nội dung HTML mới
         defaultValueRef.current = defaultValue; // Cập nhật giá trị defaultValueRef
       }
-    }, [defaultValue]);
+    }, [defaultValue, ref]);
 
     return (
       <div

@@ -100,14 +100,14 @@ const useAuth = () => {
         localStorage.setItem(key, JSON.stringify(userWithExpiration));
         setUser(userWithExpiration); // Cập nhật state người dùng
         setError(null);
-        return data.user;
+        return null;
       } else {
         setError(data.error || "Login failed");
-        return null;
+        return data;
       }
     } catch (err) {
       setError("An error occurred during login");
-      return null;
+      return err;
     }
   };
 

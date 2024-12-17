@@ -3,20 +3,22 @@ import useAuth from "@/hooks/use-auth";
 import AdminHeader from "./header";
 import Sidebar from "./sidebar";
 import LoadingSpinner from "@/components/loading";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function AdminLayout({ children }) {
   const { user, checkIsAdmin, ensureTokenValidity } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
-    if (checkIsAdmin() && ensureTokenValidity()) {
+    const check = async () => {
+      if ((await checkIsAdmin()) && (await ensureTokenValidity())) {
+        setIsAdmin(true);
+      }
       setIsLoading(false);
-      setIsAdmin(true);
-    }
+    };
+    check();
   }, [user]);
 
   if (isLoading) {
@@ -24,8 +26,7 @@ export default function AdminLayout({ children }) {
   }
 
   if (!isAdmin) {
-    router.push("/");
-    return <LoadingSpinner />;
+    redirect("/");
   }
 
   return (

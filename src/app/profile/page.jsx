@@ -38,10 +38,20 @@ const ProfilePageContent = () => {
   }, [tabParam]);
 
   useEffect(() => {
+    const check = async () => {
+      if (checkIsLoggedIn()) {
+        setIsLoggedIn(true);
+      }
+      setIsLoading(false);
+    };
+    check();
+  }, [checkIsLoggedIn]);
+
+  useEffect(() => {
     const loadProfile = async () => {
       setIsLoading(true);
-      if (checkIsLoggedIn()) {
-        const response = await fetch(`${SERVER_URL}/user/detail/${user.id}`, {
+      if (isLoggedIn) {
+        const response = await fetch(`${SERVER_URL}/user/detail/${user?.id}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -53,13 +63,18 @@ const ProfilePageContent = () => {
           return;
         }
         const data = await response.json();
+        console.log("API Response:", data);
         setProfile((prev) => ({ ...prev, ...data }));
         setIsLoggedIn(true);
       }
       setIsLoading(false);
     };
     loadProfile();
-  }, [user]);
+  }, [isLoggedIn, user]);
+
+  useEffect(() => {
+    console.log("Profile:", profile);
+  }, [profile]);
 
   if (isLoading) {
     return (

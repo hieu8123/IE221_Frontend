@@ -14,6 +14,11 @@ const ProfileComponent = ({ profile, setProfile }) => {
   const [isChangedAvatar, setIsChangedAvatar] = useState(false);
   const [userName, setUserName] = useState(profile?.name || "");
 
+  useEffect(() => {
+    setUserName(profile?.name || "");
+    setPreviewUrl(profile?.avatar || "");
+  }, [profile]);
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;

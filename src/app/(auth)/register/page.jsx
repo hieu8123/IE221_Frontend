@@ -32,7 +32,7 @@ export default function Register() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { register, checkIsLoggedIn } = useAuth();
+  const { register } = useAuth();
 
   // Hàm xử lý submit form
   const handleSubmit = async (event) => {
@@ -78,11 +78,6 @@ export default function Register() {
     notify("success", "Đăng ký thành công");
     redirect("/");
   };
-
-  //   Kiểm tra nếu người dùng đã đăng nhập
-  if (checkIsLoggedIn()) {
-    redirect("/");
-  }
 
   return (
     <div className="flex min-h-[600px] items-center justify-center bg-gray-50">
@@ -182,7 +177,7 @@ export default function Register() {
               <p className="text-red-500 text-xs">{error.confirmPassword}</p>
             )}
           </div>
-          <SubmitButton isLoading={isLoading}>Đăng ký</SubmitButton>
+          <SubmitButton isLoading={isLoading}>Đăng nhập</SubmitButton>
           <p className="text-center text-sm text-gray-800">
             {"Bạn đã có tài khoản? "}
             <Link href="/login" className="font-semibold text-blue-600">

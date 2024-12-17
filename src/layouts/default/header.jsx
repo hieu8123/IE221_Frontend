@@ -70,10 +70,13 @@ export default function Header() {
   }, [pathname, cartState.cartItems]);
 
   useEffect(() => {
-    if (checkIsLoggedIn && user && ensureTokenValidity()) {
-      setIsAdmin(checkIsAdmin());
-      setIsLoggedIn(true);
-    }
+    const check = async () => {
+      if (checkIsLoggedIn() && user && ensureTokenValidity()) {
+        setIsAdmin(await checkIsAdmin());
+        setIsLoggedIn(true);
+      }
+    };
+    check();
   }, [user]);
 
   useEffect(() => {
@@ -93,6 +96,12 @@ export default function Header() {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    notify("success", "Đăng xuất thành công");
+    setIsLoggedIn(false);
+  };
 
   return (
     <header className="bg-blue-400 text-white shadow-md">
@@ -165,7 +174,7 @@ export default function Header() {
                       </li>
                     )}
                     <li className="hover:scale-110  hover:text-blue-500">
-                      <button onClick={logout}>Đăng xuất</button>
+                      <button onClick={handleLogout}>Đăng xuất</button>
                     </li>
                   </ul>
                 </div>
