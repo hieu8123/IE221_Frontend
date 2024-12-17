@@ -6,7 +6,7 @@ import notify from "@/components/notifications";
 import { useSelector } from "react-redux";
 import { formatPrice } from "@/utils";
 import { SERVER_URL } from "@/contains";
-import { redirect } from "next/dist/server/api-utils";
+import { useRouter } from "next/navigation";
 
 // Zod validation schema
 const checkoutSchema = z.object({
@@ -24,6 +24,7 @@ const checkoutSchema = z.object({
 });
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     lineAddress: "",
@@ -78,7 +79,7 @@ export default function CheckoutPage() {
       const data = await response.json();
 
       notify("success", "Order created successfully");
-      redirect(`/check-out/success?order_id=${data.id}&status=SUCCESS`);
+      router.push(`/check-out/success?order_id=${id}&status=SUCCESS`);
     } catch (error) {
       console.error("Failed to payment:", error);
       notify("error", "Failed to payment");
