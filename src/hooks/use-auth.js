@@ -27,6 +27,20 @@ const useAuth = () => {
     setLoading(false);
   }, []);
 
+  if (typeof window === "undefined") {
+    return {
+      login: () => {},
+      logout: () => {},
+      user: null,
+      loading: false,
+      error: "Hook chỉ chạy trên client-side",
+      checkIsLoggedIn: () => false,
+      checkIsAdmin: () => false,
+      register: () => null,
+      ensureTokenValidity: () => false,
+    };
+  }
+
   const refreshToken = async () => {
     try {
       // Gửi request để làm mới token
@@ -152,12 +166,14 @@ const useAuth = () => {
     }
   };
 
-  const checkIsLoggedIn = () => {
-    return !!user; // Kiểm tra xem người dùng đã đăng nhập chưa
+  const checkIsLoggedIn = async () => {
+    const storedUser = JSON.parse(localStorage.getItem(key));
+    return !!storedUser; // Trả về true nếu người dùng có session
   };
 
-  const checkIsAdmin = () => {
-    return user?.role === "ADMIN"; // Kiểm tra quyền admin
+  const checkIsAdmin = async () => {
+    const storedUser = JSON.parse(localStorage.getItem(key));
+    return storedUser?.role === "ROLE_ADMIN"; // Trả về true nếu role là admin
   };
 
   const ensureTokenValidity = async () => {

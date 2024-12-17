@@ -1,143 +1,100 @@
-"use client";
 import { LayoutDefault } from "@/layouts";
 import EnhancedCarousel from "@/components/banner";
 import Card from "@/components/card/product-card";
 import { SERVER_URL } from "@/contains";
-import { useEffect, useState } from "react";
-import notify from "@/components/notifications";
-import { set } from "zod";
 import LoadingSpinner from "@/components/loading";
 
-export default function Home() {
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [newProducts, setNewProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+async function fetchFeaturedProducts() {
+  const featuredUrl = new URL(`${SERVER_URL}/product/filter`);
+  featuredUrl.searchParams.append("page", "1");
+  featuredUrl.searchParams.append("per_page", "8");
+  featuredUrl.searchParams.append("sort_by", "buyturn");
+  featuredUrl.searchParams.append("sort_order", "desc");
 
-  useEffect(() => {
-    const fetchFeaturedProducts = async (
-      page = 1,
-      perPage = 8,
-      sortBy = "buyturn",
-      sortOrder = "desc"
-    ) => {
-      try {
-        setIsLoading(true);
-        // Xây dựng URL với tham số query string
-        const url = new URL(`${SERVER_URL}/product/filter`); // Thay thế bằng URL thật của API
-        const params = {
-          page,
-          per_page: perPage,
-          sort_by: sortBy, // Sắp xếp theo số lượt mua (buyturn)
-          sort_order: sortOrder, // 'desc' để sản phẩm bán chạy nhất lên đầu
-        };
-        Object.keys(params).forEach((key) =>
-          url.searchParams.append(key, params[key])
-        );
+  const featuredResponse = await fetch(featuredUrl, { cache: "no-store" });
+  if (!featuredResponse.ok) {
+    throw new Error(
+      `Error fetching featured products: ${featuredResponse.statusText}`
+    );
+  }
+  const featuredData = await featuredResponse.json();
+  return featuredData.products || [];
+}
 
-        // Gửi yêu cầu GET tới API
-        const response = await fetch(url);
-        const data = await response.json();
+// Hàm để lấy dữ liệu sản phẩm mới
+async function fetchNewProducts() {
+  const newUrl = new URL(`${SERVER_URL}/product/filter`);
+  newUrl.searchParams.append("page", "1");
+  newUrl.searchParams.append("per_page", "8");
+  newUrl.searchParams.append("sort_by", "created_at");
+  newUrl.searchParams.append("sort_order", "desc");
 
-        if (!response.ok) {
-          throw new Error(`Lỗi khi lấy dữ liệu: ${response.statusText}`);
-        }
+  const newResponse = await fetch(newUrl, { cache: "no-store" });
+  if (!newResponse.ok) {
+    throw new Error(`Error fetching new products: ${newResponse.statusText}`);
+  }
+  const newData = await newResponse.json();
+  return newData.products || [];
+}
 
-        if (response.ok) {
-          setFeaturedProducts(data.products); // Trả về danh sách sản phẩm
-        } else {
-          console.error("Lỗi khi lấy dữ liệu:", data);
-          notify("error", "Đã xảy ra lỗi khi lấy dữ liệu");
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.log("Đã xảy ra lỗi:", error);
-        notify("error", "Đã xảy ra lỗi:" + error);
-      }
-    };
+export const dynamic = "force-dynamic";
 
-    const fetchNewProducts = async (
-      page = 1,
-      perPage = 8,
-      sortBy = "created_at",
-      sortOrder = "desc"
-    ) => {
-      try {
-        setIsLoading(true);
-        // Xây dựng URL với tham số query string
-        const url = new URL(`${SERVER_URL}/product/filter`); // Thay thế bằng URL thật của API
-        const params = {
-          page,
-          per_page: perPage,
-          sort_by: sortBy, // Sắp xếp theo số lượt mua (buyturn)
-          sort_order: sortOrder, // 'desc' để sản phẩm bán chạy nhất lên đầu
-        };
-        Object.keys(params).forEach((key) =>
-          url.searchParams.append(key, params[key])
-        );
+export default async function Home() {
+  try {
+    // Lấy dữ liệu sản phẩm nổi bật và sản phẩm mới
+    const [featuredProducts, newProducts] = await Promise.all([
+      fetchFeaturedProducts(),
+      fetchNewProducts(),
+    ]);
 
-        // Gửi yêu cầu GET tới API
-        const response = await fetch(url);
-        const data = await response.json();
+    if (!featuredProducts.length && !newProducts.length) {
+      return (
+        <LayoutDefault>
+          <div className="relative h-[80vh]">
+            <LoadingSpinner />
+          </div>
+        </LayoutDefault>
+      );
+    }
 
-        if (!response.ok) {
-          throw new Error(`Lỗi khi lấy dữ liệu: ${response.statusText}`);
-        }
-
-        if (response.ok) {
-          setNewProducts(data.products); // Trả về danh sách sản phẩm
-        } else {
-          console.error("Lỗi khi lấy dữ liệu:", data);
-          notify("error", "Đã xảy ra lỗi khi lấy dữ liệu");
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.log("Đã xảy ra lỗi:", error);
-        notify("error", "Đã xảy ra lỗi:" + error);
-      }
-    };
-
-    fetchFeaturedProducts();
-    fetchNewProducts();
-  }, []);
-
-  if (isLoading) {
     return (
       <LayoutDefault>
-        <div className="relative h-[80vh]">
-          <LoadingSpinner />
+        <EnhancedCarousel />
+        <section className="container mx-auto my-5 px-4 py-8 rounded shadow-slate-400 shadow-sm">
+          <h2 className="text-3xl font-semibold text-gray-900 ">
+            Sản phẩm nổi bật
+          </h2>
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-center">
+            {featuredProducts.map((product) => (
+              <li key={product.id} className="mt-4 flex justify-center">
+                <Card product={product} />
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="container mx-auto my-5 px-4 py-8 rounded shadow-slate-400 shadow-sm">
+          <h2 className="text-3xl font-semibold text-gray-900 ">
+            Sản phẩm mới
+          </h2>
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-center">
+            {newProducts.map((product) => (
+              <li key={product.id} className="mt-4 flex justify-center">
+                <Card product={product} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      </LayoutDefault>
+    );
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return (
+      <LayoutDefault>
+        <div className="container mx-auto py-6 px-6">
+          <p className="text-red-500">Lỗi: Không thể tải dữ liệu sản phẩm.</p>
         </div>
       </LayoutDefault>
     );
   }
-
-  return (
-    <LayoutDefault>
-      <EnhancedCarousel />
-      <section className="container mx-auto my-5 px-4 py-8 rounded shadow-slate-400 shadow-sm">
-        <h2 className="text-3xl font-semibold text-gray-900 ">
-          Sản phẩm nổi bật
-        </h2>
-        <ul className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-center">
-          {featuredProducts.length != 0 &&
-            featuredProducts.map((product) => (
-              <li key={product.id} className="mt-4 flex justify-center">
-                <Card product={product} />
-              </li>
-            ))}
-        </ul>
-      </section>
-
-      <section className="container mx-auto my-5 px-4 py-8 rounded shadow-slate-400 shadow-sm">
-        <h2 className="text-3xl font-semibold text-gray-900 ">Sản phẩm mới</h2>
-        <ul className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-center">
-          {newProducts.length != 0 &&
-            newProducts.map((product) => (
-              <li key={product.id} className="mt-4 flex justify-center">
-                <Card product={product} />
-              </li>
-            ))}
-        </ul>
-      </section>
-    </LayoutDefault>
-  );
 }

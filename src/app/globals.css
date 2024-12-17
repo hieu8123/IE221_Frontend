@@ -6,8 +6,8 @@
 @import "~react-toastify/dist/ReactToastify.min.css";
 /* React-loading-skeleton */
 @import "~react-loading-skeleton/dist/skeleton.css";
-/* CKEditor */
-@import "~ckeditor5/ckeditor5.css";
+/* Quill */
+@import "quill/dist/quill.snow.css";
 
 :root {
   --background: #ffffff;

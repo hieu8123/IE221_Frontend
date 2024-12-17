@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,6 @@ import {
   updateCart,
   removeFromCart,
   clearCart,
-  syncCartToBackend,
 } from "@/redux/cartSlice";
 import { LayoutDefault } from "@/layouts";
 import useAuth from "@/hooks/use-auth";
@@ -28,7 +27,7 @@ const Cart = () => {
       setIsLoading(false);
     };
     loadCart();
-  }, []);
+  }, [dispatch]);
 
   // Xử lý tăng số lượng sản phẩm
   const handleIncreaseQuantity = (product) => {
@@ -62,14 +61,12 @@ const Cart = () => {
   };
 
   // Tổng tiền
-  const calculateTotal = () => {
-    const subtotal = cartItems.reduce(
+  const calculateTotal = useMemo(() => {
+    return cartItems.reduce(
       (total, item) => total + item.quantity * (item.product?.price || 0),
       0
     );
-    console.log(subtotal);
-    return subtotal;
-  };
+  }, [cartItems]);
 
   if (isLoading) {
     return (
@@ -132,49 +129,13 @@ const Cart = () => {
               </thead>
               <tbody>
                 {cartItems.map((item) => (
-                  <tr className="border-b" key={item.product.id}>
-                    <td className="p-4 flex items-center gap-4">
-                      <Image
-                        src={item.product.images[0]}
-                        alt={item.product.name || "Product"}
-                        width={50}
-                        height={50}
-                        className="w-12 h-12 rounded-lg"
-                      />
-                      <span>{item.product.name || "Sản phẩm"}</span>
-                    </td>
-                    <td className="p-4">
-                      {(item.product.price || 0).toLocaleString()} ₫
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        <button
-                          className="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200"
-                          onClick={() => handleDecreaseQuantity(item.product)}
-                        >
-                          -
-                        </button>
-                        <span>{item.quantity}</span>
-                        <button
-                          className="w-8 h-8 bg-gray-100 rounded-md text-lg font-semibold text-gray-700 hover:bg-gray-200"
-                          onClick={() => handleIncreaseQuantity(item.product)}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      {(item.quantity * item.product.price).toLocaleString()} ₫
-                    </td>
-                    <td className="p-4">
-                      <button
-                        className="text-red-500 hover:text-red-700"
-                        onClick={() => handleRemoveItem(item.product.id)}
-                      >
-                        Xóa
-                      </button>
-                    </td>
-                  </tr>
+                  <CartItemRow
+                    key={item.product.id}
+                    item={item}
+                    onIncrease={handleIncreaseQuantity}
+                    onDecrease={handleDecreaseQuantity}
+                    onRemove={handleRemoveItem}
+                  />
                 ))}
               </tbody>
             </table>
@@ -185,7 +146,7 @@ const Cart = () => {
           {/* Tổng tiền và nút thanh toán */}
           <div className="flex justify-between items-center mt-6">
             <h2 className="text-xl font-semibold">
-              Tổng cộng: {calculateTotal().toLocaleString()} ₫
+              Tổng cộng: {calculateTotal.toLocaleString()} ₫
             </h2>
             <Link
               href="/check-out"
@@ -199,5 +160,39 @@ const Cart = () => {
     </LayoutDefault>
   );
 };
+
+const CartItemRow = ({ item, onIncrease, onDecrease, onRemove }) => (
+  <tr className="border-b">
+    <td className="p-4 flex items-center gap-4">
+      <Image
+        src={item.product.images[0]}
+        alt={item.product.name || "Product"}
+        width={50}
+        height={50}
+        className="w-12 h-12 rounded-lg"
+      />
+      <span>{item.product.name || "Sản phẩm"}</span>
+    </td>
+    <td className="p-4">{(item.product.price || 0).toLocaleString()} ₫</td>
+    <td className="p-4">
+      <div className="flex items-center gap-2">
+        <button onClick={() => onDecrease(item.product)}>-</button>
+        <span>{item.quantity}</span>
+        <button onClick={() => onIncrease(item.product)}>+</button>
+      </div>
+    </td>
+    <td className="p-4">
+      {(item.quantity * item.product.price).toLocaleString()} ₫
+    </td>
+    <td className="p-4">
+      <button
+        className="text-red-500 hover:text-red-700"
+        onClick={() => onRemove(item.product.id)}
+      >
+        Xóa
+      </button>
+    </td>
+  </tr>
+);
 
 export default Cart;

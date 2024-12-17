@@ -1,21 +1,3 @@
-import Footer from "@/layouts/default/footer";
-import Header from "@/layouts/default/header";
-
-function LayoutDefault({ children }) {
-  return (
-    <div className="grid grid-rows-[auto_1fr_auto] min-h-screen">
-      <Header />
-      <main>
-        {children || (
-          <div className="text-center py-10 text-gray-500">
-            Không có nội dung hiển thị
-          </div>
-        )}
-      </main>
-
-      <Footer />
-    </div>
-  );
-}
-
-export { LayoutDefault };
+import AdminLayout from "./admin";
+import LayoutDefault from "./default";
+export { LayoutDefault, AdminLayout };

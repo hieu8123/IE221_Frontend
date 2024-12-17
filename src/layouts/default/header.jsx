@@ -14,14 +14,20 @@ import { usePathname, useRouter } from "next/navigation";
 import { initializeCart } from "@/redux/cartSlice";
 
 export default function Header() {
-  const { checkIsLoggedIn, user, logout, error, ensureTokenValidity } =
-    useAuth();
-  const isLoggedIn = checkIsLoggedIn();
+  const {
+    checkIsLoggedIn,
+    user,
+    logout,
+    error,
+    ensureTokenValidity,
+    checkIsAdmin,
+  } = useAuth();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuRef = useRef(null);
   const userButtonRef = useRef(null);
   const cartState = useSelector((state) => state.cart);
-  const router = useRouter();
   const dispatch = useDispatch();
   const pathname = usePathname();
 
@@ -63,15 +69,12 @@ export default function Header() {
     if (isLoggedIn) syncCart();
   }, [pathname, cartState.cartItems]);
 
-  // kiểm tra trạng thái đăng nhập
   useEffect(() => {
-    if (isLoggedIn) {
-      if (!ensureTokenValidity()) {
-        notify("warning", error);
-        logout();
-      }
+    if (checkIsLoggedIn && user && ensureTokenValidity()) {
+      setIsAdmin(checkIsAdmin());
+      setIsLoggedIn(true);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -143,7 +146,7 @@ export default function Header() {
                 >
                   <CiUser className="scale-150 text-pink-500" />
                   <span className="hidden sm:inline ml-2 text-pink-500">
-                    Chào, {user.name}
+                    Chào, {user?.name}
                   </span>
                 </button>
                 <div
@@ -156,9 +159,11 @@ export default function Header() {
                     <li className="hover:scale-110 hover:text-blue-500">
                       <Link href="/profile">Hồ sơ cá nhân</Link>
                     </li>
-                    <li className="hover:scale-110  hover:text-blue-500">
-                      <Link href="/orders">Đơn hàng của tôi</Link>
-                    </li>
+                    {isAdmin && (
+                      <li className="hover:scale-110  hover:text-blue-500">
+                        <Link href="/admin/dashboard">Trang quản lý</Link>
+                      </li>
+                    )}
                     <li className="hover:scale-110  hover:text-blue-500">
                       <button onClick={logout}>Đăng xuất</button>
                     </li>

@@ -133,7 +133,7 @@ const ProfileComponent = ({ profile, setProfile }) => {
           </label>
           <input
             disabled={true}
-            value={profile.phone}
+            value={profile.phone || ""}
             onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
             className="w-full p-2 border border-gray-300 rounded-md"
           />

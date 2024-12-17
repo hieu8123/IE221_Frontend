@@ -2,7 +2,7 @@
 import { LayoutDefault } from "@/layouts";
 import Card from "@/components/card/product-card";
 import { SERVER_URL } from "@/contains";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import notify from "@/components/notifications";
 import SelectDropdown from "@/components/drop-downs/select-drop-down";
 import MultiRangeSlider from "@/components/slider/multi-range-slider";
@@ -10,7 +10,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { set } from "zod";
 import LoadingSpinner from "@/components/loading";
 
-export default function ProductsPage() {
+function Products() {
   const [filterdProducts, setFilterdProducts] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -181,7 +181,7 @@ export default function ProductsPage() {
   }, [filter]); // Chỉ khi debouncedFilter thay đổi
 
   return (
-    <LayoutDefault>
+    <>
       <section className="container grid grid-cols-1 lg:grid-cols-2 rounded shadow-md p-10 mx-auto mt-7 gap-4">
         <div className="">
           <div className="flex justify-start gap-2">
@@ -323,6 +323,16 @@ export default function ProductsPage() {
           </nav>
         </div>
       )}
+    </>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <LayoutDefault>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Products />
+      </Suspense>
     </LayoutDefault>
   );
 }
