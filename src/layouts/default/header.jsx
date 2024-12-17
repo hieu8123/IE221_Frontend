@@ -10,7 +10,7 @@ import { IoIosCart } from "react-icons/io";
 import notify from "@/components/notifications";
 import { useDispatch, useSelector } from "react-redux";
 import { SERVER_URL } from "@/contains";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import { initializeCart } from "@/redux/cartSlice";
 
 export default function Header() {
@@ -101,6 +101,7 @@ export default function Header() {
     await logout();
     notify("success", "Đăng xuất thành công");
     setIsLoggedIn(false);
+    redirect("/");
   };
 
   return (

@@ -102,8 +102,8 @@ const useAuth = () => {
         setError(null);
         return null;
       } else {
-        setError(data.error || "Login failed");
-        return data;
+        setError(data || "Login failed");
+        return data.message || "Login failed";
       }
     } catch (err) {
       setError("An error occurred during login");
@@ -133,18 +133,19 @@ const useAuth = () => {
           ...data.user,
           tokenExpiration: expirationTime, // Lưu thời gian hết hạn token
         };
+
         localStorage.setItem(key, JSON.stringify(userWithExpiration));
         setUser(userWithExpiration); // Cập nhật state người dùng
         setError(null); // Xóa thông báo lỗi nếu đăng ký thành công
-        return data.user; // Trả về thông tin người dùng
+        return null; // Trả về thông tin người dùng
       } else {
-        setError(data.error || "Registration failed");
-        return null;
+        setError(data.message || "Registration failed ");
+        return data.message || "Registration failed ";
       }
     } catch (err) {
       setError("An error occurred during registration");
       console.error(err);
-      return null;
+      return err;
     }
   };
 
@@ -155,6 +156,7 @@ const useAuth = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
       });
 
       localStorage.removeItem(key); // Xóa session khỏi localStorage

@@ -53,13 +53,13 @@ export default function Login() {
     const err = await login(email, password);
     if (err) {
       setIsLoading(false);
-      notify("error", error);
+      notify("error", err);
       return;
     }
 
     setIsLoading(false);
     notify("success", "Đăng nhập thành công");
-    router.push("/"); // Chuyển hướng về trang chủ
+    router.push("/");
   };
 
   return (

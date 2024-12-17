@@ -67,8 +67,8 @@ export default function Register() {
     }
 
     // Nếu dữ liệu hợp lệ, thực hiện đăng ký
-    const { user, error } = await register(email, password, name);
-    if (!user) {
+    const error = await register(email, password, name);
+    if (error) {
       setIsLoading(false);
       notify("error", error);
       return;
@@ -177,11 +177,11 @@ export default function Register() {
               <p className="text-red-500 text-xs">{error.confirmPassword}</p>
             )}
           </div>
-          <SubmitButton isLoading={isLoading}>Đăng nhập</SubmitButton>
+          <SubmitButton isLoading={isLoading}>Đăng ký</SubmitButton>
           <p className="text-center text-sm text-gray-800">
             {"Bạn đã có tài khoản? "}
             <Link href="/login" className="font-semibold text-blue-600">
-              Đăng ký
+              Đăng nhập
             </Link>
             {" ngay."}
           </p>
