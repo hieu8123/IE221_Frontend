@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 import { formatPrice } from "@/utils";
 import { SERVER_URL } from "@/contains";
 import { useRouter } from "next/navigation";
+import useAuth from "@/hooks/use-auth";
+import LoadingSpinner from "@/components/loading";
 
 // Zod validation schema
 const checkoutSchema = z.object({
@@ -24,6 +26,9 @@ const checkoutSchema = z.object({
 });
 
 export default function CheckoutPage() {
+  const [isLogged, setIsLogged] = useState(false);
+  const { checkIsLoggedIn, user, ensureTokenValidity } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
@@ -163,8 +168,6 @@ export default function CheckoutPage() {
       notify("error", "Please select a payment option");
       return;
     }
-
-    notify("success", "Order submitted successfully");
   };
 
   // Call to fetch provinces when the page loads
@@ -172,6 +175,31 @@ export default function CheckoutPage() {
     fetchProvinces();
   }, []);
 
+  useEffect(() => {
+    if (checkIsLoggedIn() && user && ensureTokenValidity()) {
+      setIsLogged(true);
+    }
+    setIsLoading(false);
+  }, [user, checkIsLoggedIn, ensureTokenValidity]);
+
+  if (isLoading) {
+    return (
+      <LayoutDefault>
+        <LoadingSpinner />
+      </LayoutDefault>
+    );
+  }
+
+  if (!isLogged) {
+    return (
+      <LayoutDefault>
+        <div className="max-w-7xl mx-auto p-6 md:p-12">
+          <h1 className="text-2xl font-semibold mb-6">Vui lòng đăng nhập</h1>
+          <p>Bạn cần đăng nhập để thực hiện thanh toán</p>
+        </div>
+      </LayoutDefault>
+    );
+  }
   return (
     <LayoutDefault>
       <div className="max-w-7xl mx-auto p-6 md:p-12">

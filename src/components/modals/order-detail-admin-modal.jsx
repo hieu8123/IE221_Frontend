@@ -25,7 +25,14 @@ import notify from "../notifications";
 const getValidStatuses = (currentStatus) => {
   switch (currentStatus) {
     case "pending":
-      return ["paid", "cancelled", "awaiting payment", "cancelled", "error"]; // Allow transition to paid or cancelled
+      return [
+        "paid",
+        "pending",
+        "cancelled",
+        "awaiting payment",
+        "cancelled",
+        "error",
+      ]; // Allow transition to paid or cancelled
     case "paid":
       return ["paid", "refund requested"]; // Only allow refund request
     case "refund requested":
