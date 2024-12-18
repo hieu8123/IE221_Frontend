@@ -79,7 +79,7 @@ export default function CheckoutPage() {
       const data = await response.json();
 
       notify("success", "Order created successfully");
-      router.push(`/check-out/success?order_id=${id}&status=SUCCESS`);
+      router.push(`/check-out/success?order_id=${data.id}&status=SUCCESS`);
     } catch (error) {
       console.error("Failed to payment:", error);
       notify("error", "Failed to payment");

@@ -13,7 +13,7 @@ export default function AdminLayout({ children }) {
 
   useEffect(() => {
     const check = async () => {
-      if ((await checkIsAdmin()) && (await ensureTokenValidity())) {
+      if ((await checkIsAdmin()) && (ensureTokenValidity())) {
         setIsAdmin(true);
       }
       setIsLoading(false);
